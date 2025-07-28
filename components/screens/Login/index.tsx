@@ -12,7 +12,13 @@ export default function Login() {
   const handleLogin = () => {
     // Aqui você implementaria a lógica de login
     console.log('Login attempt with:', email, password);
-    navigation.navigate('home', { email });
+    navigation.navigate('home', { email:email });
+  };
+  
+  const handleRegister = () => {
+    // Aqui você implementaria a lógica de login
+    console.log('Login attempt with:', email, password);
+    navigation.navigate('register');
   };
 
   return (
@@ -37,6 +43,9 @@ export default function Login() {
       />
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Entrar</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        <Text style={styles.buttonText}>Registrar-se</Text>
       </TouchableOpacity>
     </View>
     </View>
