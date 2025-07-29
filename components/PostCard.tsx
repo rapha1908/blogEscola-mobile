@@ -2,14 +2,14 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface PostCardProps {
-  id: string | number; // Added id prop
+  id: string | number;
   title: string;
   author: string;
   subject: string;
   content: string;
-  canEdit: boolean; // Added canEdit prop
-  onEdit: (id: string | number) => void; // Updated onEdit prop type
-  onDelete: (id: string | number) => void; // Updated onDelete prop type
+  canEdit: boolean;
+  onEdit: (id: string | number) => void;
+  onDelete: (id: string | number) => void;
 }
 
 const PostCard: React.FC<PostCardProps> = ({ id, title, author, subject, content, canEdit, onEdit, onDelete }) => {
@@ -21,16 +21,16 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, author, subject, content
       <Text style={styles.author}>Autor: {author}</Text>
       <Text style={styles.subject}>Matéria: {subject}</Text>
       <Text style={styles.description}>{description}</Text>
-      <View style={styles.buttonContainer}>
-        {canEdit && (
+      {canEdit && (
+        <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={() => onEdit(id)}>
             <Text style={styles.buttonText}>Editar</Text>
           </TouchableOpacity>
-        )}
-        <TouchableOpacity style={styles.button} onPress={() => onDelete(id)}>
-          <Text style={styles.buttonText}>Excluir</Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity style={[styles.button, styles.deleteButton]} onPress={() => onDelete(id)}>
+            <Text style={styles.buttonText}>Excluir</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };
@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    marginTop: 10,
   },
   button: {
     backgroundColor: '#4A5568',
@@ -75,19 +76,12 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginLeft: 8,
   },
+  deleteButton: {
+    backgroundColor: '#E53E3E', // Cor vermelha para o botão de excluir
+  },
   buttonText: {
     color: 'white',
     fontSize: 12,
-  },
-  editButton: {
-    backgroundColor: '#4B5563',
-    padding: 5,
-    borderRadius: 5,
-    alignSelf: 'flex-end',
-    marginTop: 10,
-  },
-  editButtonText: {
-    color: 'white',
     fontWeight: 'bold',
   },
 });
