@@ -1,7 +1,7 @@
 import PostCard from '@/components/PostCard';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { Alert, Button, FlatList, StyleSheet, Text, View } from 'react-native';
+import { Alert, Button, FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
 import { GetPosts, deletePost } from '../../../api/login';
 
 export default function Home({ route }) {
@@ -9,6 +9,8 @@ export default function Home({ route }) {
   const [token, setToken] = useState(route.params?.token);
   const [userEmail, setUserEmail] = useState(route.params?.email);
   const navigation = useNavigation();
+
+  const [filterText, setFilterText] = useState("")
 
   useEffect(() => {
     if (token) {
@@ -68,6 +70,10 @@ export default function Home({ route }) {
   }
 };
 
+ const filteredPosts = posts.filter(post => 
+    post.titulo.toLowerCase().includes(filterText.toLowerCase())
+ );
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -77,8 +83,15 @@ export default function Home({ route }) {
         )}
       </View>
       <Button title="Criar Post" onPress={handleCreatePost} />
+      <TextInput
+        style={styles.filterInput}
+        placeholder="Filtrar por título"
+        value={filterText}
+        onChangeText={setFilterText}
+        placeholderTextColor="#9CA3AF"
+      />
       <FlatList
-        data={posts}
+        data={filteredPosts}
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
           <PostCard
