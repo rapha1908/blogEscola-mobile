@@ -8,6 +8,8 @@ const api = axios.create({
 export const registerUser = async (nome: string, email: string, senha: string, tipo: string) => {
   try {
     const response = await api.post('/users', { nome, email, senha, tipo });
+    console.log('Registro realizado com sucesso:', response.data.token);
+
     return response.data;
   } catch (error) {
     console.error('Erro detalhado:', error.response?.data || error.message);
