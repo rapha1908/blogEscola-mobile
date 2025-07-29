@@ -1,17 +1,30 @@
 import { Picker } from '@react-native-picker/picker';
+import { useNavigation } from "@react-navigation/native";
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { registerUser } from '../../../api/login';
+
 
 export default function Register() {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [tipo, setTipo] = useState('');
+    
+  const navigation = useNavigation();
+  
 
   const handleRegister = async () => {
-    console.log('Register attempt with:', nome, email, senha, tipo);
-    // Aqui voc&#234; implementaria a l&#243;gica de registro
+    try {
+      const result = await registerUser(nome, email, senha, tipo);
+      console.log('Register successful:', result);
+      Alert.alert('Sucesso', 'Registro realizado com sucesso!');
+      navigation.navigate('login');
+    } catch (error) {
+      console.error('Register failed:', error);
+      Alert.alert('Erro', 'Falha no registro. Por favor, tente novamente.');
+    }
   };
 
   return (
