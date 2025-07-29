@@ -1,49 +1,65 @@
 import PostCard from '@/components/PostCard';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { GetPosts } from '../../../api/login';
 
-const Posts = [
-  {
-    id: '1',
-    title: 'Introdução à Matemática',
-    author: 'Prof. Silva',
-    subject: 'Matemática',
-    content: 'Neste post, vamos explorar os conceitos básicos da matemática e como eles se aplicam no nosso dia a dia...',
-  },
-  {
-    id: '2',
-    title: 'A importância da leitura',
-    author: 'Profa. Santos',
-    subject: 'Português',
-    content: 'A leitura é fundamental para o desenvolvimento intelectual e emocional. Neste artigo, discutiremos os benefícios da leitura regular...',
-  },
-  {
-    id: '3',
-    title: 'Revolução Industrial',
-    author: 'Prof. Oliveira',
-    subject: 'História',
-    content: 'A Revolução Industrial foi um período de grandes mudanças tecnológicas e sociais. Vamos analisar seus impactos na sociedade moderna...',
-  },
-];
+export default function Home({ route }) {
+  const [posts, setPosts] = useState([]);
+  const [token, setToken] = useState(route.params?.token);
+  const [userEmail, setUserEmail] = useState(route.params?.email);
+  const navigation = useNavigation();
 
-export default function Home({route}) {
+  useEffect(() => {
+    if (token) {
+      fetchPosts(token);
+    }
+  }, [token]);
 
+  const fetchPosts = async (token) => {
+    try {
+      const postsData = await GetPosts(token);
+      setPosts(postsData);
+    } catch (error) {
+      console.error('Erro ao buscar posts:', error);
+      // Você pode adicionar um alerta ou uma mensagem de erro aqui
+    }
+  };
 
-  const { email } = route.params;
-    return (
+  const handleEdit = (id) => {
+    console.log(`Editar post ${id}`);
+    // Implementar a l&oacute;gica de edi&ccedil;&atilde;o
+  };
+
+  const handleDelete = (id) => {
+    console.log(`Excluir post ${id}`);
+    // Implementar a l&oacute;gica de exclus&atilde;o
+  };
+
+ return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Bem-vindo ao Blog Escola!</Text>
-        <Text style={styles.subHeaderText}>Você está logado como: {email}</Text>
+        {userEmail && (
+          <Text style={styles.subHeaderText}>Você está logado como: {userEmail}</Text>
+        )}
       </View>
-      {Posts.map((post) => (
+      <TouchableOpacity 
+        style={styles.createButton} 
+        onPress={() => navigation.navigate('create', { token: token })}
+      >
+        <Text style={styles.createButtonText}>Criar Novo Post</Text>
+      </TouchableOpacity>
+      {posts.map((post) => (
         <PostCard
-          key={post.id}
-          title={post.title}
-          author={post.author}
-          subject={post.subject}
-          content={post.content}
-          onEdit={() => handleEdit(post.id)}
-          onDelete={() => handleDelete(post.id)}
+          key={post._id}
+          id={post._id}
+          title={post.titulo}
+          author={post.autor.nome}
+          subject={post.materia}
+          content={post.conteudo}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
         />
       ))}
     </ScrollView>
@@ -68,5 +84,17 @@ const styles = StyleSheet.create({
   subHeaderText: {
     color: '#9CA3AF',
     fontSize: 16,
+  },
+  createButton: {
+    backgroundColor: '#3498DB',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginHorizontal: 20,
+    marginBottom: 20,
+  },
+  createButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });

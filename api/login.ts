@@ -26,3 +26,32 @@ export const loginUser = async (email: string, senha: string) => {
     throw error;
   }
 };
+
+export const GetPosts = async (token: string) => {
+  try {
+    const response = await api.get('/Posts', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar posts:', error.response?.data || error.message);
+    throw error;
+  }
+}
+
+export const createPost = async (postData: { titulo: string, conteudo: string, materia: string }, token: string) => {
+  try {
+    const response = await api.post('/Posts', postData, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao criar post:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
