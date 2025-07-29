@@ -70,9 +70,11 @@ export default function Home({ route }) {
   }
 };
 
- const filteredPosts = posts.filter(post => 
-    post.titulo.toLowerCase().includes(filterText.toLowerCase())
- );
+const filteredPosts = posts.filter(post => 
+  post.titulo.toLowerCase().includes(filterText.toLowerCase()) ||
+  post.autor.nome.toLowerCase().includes(filterText.toLowerCase()) ||
+  post.conteudo.toLowerCase().includes(filterText.toLowerCase())
+);
 
   return (
     <View style={styles.container}>
@@ -85,7 +87,7 @@ export default function Home({ route }) {
       <Button title="Criar Post" onPress={handleCreatePost} />
       <TextInput
         style={styles.filterInput}
-        placeholder="Filtrar por título"
+        placeholder="Buscar por título, autor ou conteúdo"
         value={filterText}
         onChangeText={setFilterText}
         placeholderTextColor="#9CA3AF"
@@ -140,5 +142,15 @@ const styles = StyleSheet.create({
   createButtonText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  filterInput: {
+    height: 40,
+    borderColor: '#9CA3AF',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    margin: 20,
+    color: 'white',
+    backgroundColor: '#374151',
   },
 });

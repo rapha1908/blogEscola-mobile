@@ -7,24 +7,24 @@ interface PostCardProps {
   author: string;
   subject: string;
   content: string;
-  onEdit: () => void;
-  onDelete: (id: string) => void; // Updated onDelete prop type
+  onEdit: (id: string | number) => void; // Updated onEdit prop type
+  onDelete: (id: string | number) => void; // Updated onDelete prop type
 }
 
 const PostCard: React.FC<PostCardProps> = ({ id, title, author, subject, content, onEdit, onDelete }) => {
+  const description = content.length > 100 ? content.substring(0, 97) + '...' : content;
+
   return (
     <View style={styles.card}>
       <Text style={styles.title}>{title}</Text>
-      <Text style={styles.author}>por {author}</Text>
+      <Text style={styles.author}>Autor: {author}</Text>
       <Text style={styles.subject}>Matéria: {subject}</Text>
-      <Text style={styles.content} numberOfLines={2}>
-        {content}
-      </Text>
+      <Text style={styles.description}>{description}</Text>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.editButton} onPress={onEdit}>
+        <TouchableOpacity style={styles.button} onPress={() => onEdit(id)}>
           <Text style={styles.buttonText}>Editar</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.deleteButton} onPress={() => onDelete(id.toString())}>
+        <TouchableOpacity style={styles.button} onPress={() => onDelete(id)}>
           <Text style={styles.buttonText}>Excluir</Text>
         </TouchableOpacity>
       </View>
@@ -34,52 +34,47 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, author, subject, content
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#2C3E50',
+    backgroundColor: '#2D3748',
     borderRadius: 8,
     padding: 16,
     marginBottom: 16,
+    marginHorizontal: 16,
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
     color: 'white',
-    marginBottom: 4,
+    marginBottom: 8,
   },
   author: {
     fontSize: 14,
-    color: '#95A5A6',
+    color: '#A0AEC0',
     marginBottom: 4,
   },
   subject: {
     fontSize: 14,
-    color: '#3498DB',
+    color: '#A0AEC0',
     marginBottom: 8,
   },
-  content: {
+  description: {
     fontSize: 14,
-    color: 'white',
+    color: '#E2E8F0',
     marginBottom: 12,
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
-  editButton: {
-    backgroundColor: '#3498DB',
+  button: {
+    backgroundColor: '#4A5568',
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 4,
-    marginRight: 8,
-  },
-  deleteButton: {
-    backgroundColor: '#E74C3C',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 4,
+    marginLeft: 8,
   },
   buttonText: {
     color: 'white',
-    fontWeight: 'bold',
+    fontSize: 12,
   },
 });
 
