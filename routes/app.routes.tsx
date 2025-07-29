@@ -1,3 +1,4 @@
+import Admin from "@/components/screens/Admin";
 import CreatePost from "@/components/screens/CreatePost";
 import EditPost from "@/components/screens/EditPost";
 import Home from "@/components/screens/Home";
@@ -15,6 +16,7 @@ export function AppRoutes() {
       <Screen name="create" component={CreatePost} />
       <Screen name="detail" component={PostDetails} />
       <Screen name="edit" component={EditPost} />
+      <Screen name="admin" component={Admin} />
 
 
     </Navigator>

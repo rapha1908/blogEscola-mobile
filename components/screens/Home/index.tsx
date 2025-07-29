@@ -103,6 +103,12 @@ export default function Home({ route }) {
   const canEditPost = userType === 'Administrador' || userType === 'Professor';
   console.log("User type:", userType, "Can create post:", canCreatePost);
 
+  const isAdmin = userType === 'Administrador';
+
+  const handleAdminPress = () => {
+    navigation.navigate('admin', { token });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -144,6 +150,11 @@ export default function Home({ route }) {
         {canCreatePost && (
           <TouchableOpacity style={styles.createButton} onPress={handleCreatePost}>
             <Text style={styles.createButtonText}>+</Text>
+          </TouchableOpacity>
+        )}
+        {isAdmin && (
+          <TouchableOpacity style={styles.adminButton} onPress={handleAdminPress}>
+            <Text style={styles.adminButtonText}>Admin</Text>
           </TouchableOpacity>
         )}
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
@@ -210,6 +221,15 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   logoutButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  adminButton: {
+    backgroundColor: '#4B5563',
+    padding: 10,
+    borderRadius: 5,
+  },
+  adminButtonText: {
     color: 'white',
     fontWeight: 'bold',
   },

@@ -83,3 +83,31 @@ export const UpdatePost = async (id: string, postData: { titulo: string, conteud
     throw error;
   }
 };
+
+export const getUsers = async (token: string) => {
+  try {
+    const response = await api.get('/users', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar usuários:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const deleteUser = async (userId: string, token: string) => {
+  try {
+    const response = await api.delete(`/users/${userId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao deletar usuário:', error.response?.data || error.message);
+    throw error;
+  }
+};
