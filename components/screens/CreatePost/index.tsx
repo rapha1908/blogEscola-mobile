@@ -8,21 +8,21 @@ export default function CreatePost({ route }) {
   const [conteudo, setConteudo] = useState('');
   const [materia, setMateria] = useState('');
   const navigation = useNavigation();
-  const { token } = route.params;
+  const { token, onPostCreated } = route.params;
 
   const handleSubmit = async () => {
     if (!titulo || !conteudo || !materia) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos');
       return;
     }
-
     try {
-      const newPost = await createPost({ titulo, conteudo, materia }, token);
+      await createPost({ titulo, conteudo, materia }, token);
       Alert.alert('Sucesso', 'Post criado com sucesso!');
-      console.log(token);
-      navigation.goBack();
+      onPostCreated(); // Chama a função de callback para atualizar a lista na Home
+      navigation.goBack(); // Volta para a tela Home
     } catch (error) {
-      Alert.alert('Erro', 'Não foi possível criar o post. Tente novamente.');
+      console.error('Erro ao criar post:', error);
+      Alert.alert('Erro', 'Não foi possível criar o post.');
     }
   };
 
@@ -48,7 +48,6 @@ export default function CreatePost({ route }) {
         multiline
       />
 
-      
       <Button title="Criar Post" onPress={handleSubmit} />
     </View>
   );

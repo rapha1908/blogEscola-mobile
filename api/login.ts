@@ -55,3 +55,16 @@ export const createPost = async (postData: { titulo: string, conteudo: string, m
   }
 };
 
+export const deletePost = async (id: string, token: string) => {
+  try {
+    const response = await api.delete(`/Posts/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao deletar post:', error.response?.data || error.message);
+    throw error;
+  }
+};

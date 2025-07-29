@@ -2,15 +2,16 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface PostCardProps {
+  id: string | number; // Added id prop
   title: string;
   author: string;
   subject: string;
   content: string;
   onEdit: () => void;
-  onDelete: () => void;
+  onDelete: (id: string) => void; // Updated onDelete prop type
 }
 
-const PostCard: React.FC<PostCardProps> = ({ title, author, subject, content, onEdit, onDelete }) => {
+const PostCard: React.FC<PostCardProps> = ({ id, title, author, subject, content, onEdit, onDelete }) => {
   return (
     <View style={styles.card}>
       <Text style={styles.title}>{title}</Text>
@@ -23,7 +24,7 @@ const PostCard: React.FC<PostCardProps> = ({ title, author, subject, content, on
         <TouchableOpacity style={styles.editButton} onPress={onEdit}>
           <Text style={styles.buttonText}>Editar</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
+        <TouchableOpacity style={styles.deleteButton} onPress={() => onDelete(id.toString())}>
           <Text style={styles.buttonText}>Excluir</Text>
         </TouchableOpacity>
       </View>

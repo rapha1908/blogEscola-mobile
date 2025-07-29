@@ -1,8 +1,8 @@
 import PostCard from '@/components/PostCard';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { GetPosts } from '../../../api/login';
+import { Alert, Button, FlatList, StyleSheet, Text, View } from 'react-native';
+import { GetPosts, deletePost } from '../../../api/login';
 
 export default function Home({ route }) {
   const [posts, setPosts] = useState([]);
@@ -12,57 +12,88 @@ export default function Home({ route }) {
 
   useEffect(() => {
     if (token) {
-      fetchPosts(token);
+      fetchPosts();
     }
   }, [token]);
 
-  const fetchPosts = async (token) => {
+  const fetchPosts = async () => {
     try {
       const postsData = await GetPosts(token);
       setPosts(postsData);
     } catch (error) {
       console.error('Erro ao buscar posts:', error);
-      // Você pode adicionar um alerta ou uma mensagem de erro aqui
+      // Voc&#234; pode adicionar um alerta ou uma mensagem de erro aqui
     }
+  };
+  
+  const handleCreatePost = () => {
+    navigation.navigate('create', { 
+      token: token,
+      onPostCreated: fetchPosts // Passa a fun&#231;&#227;o de atualiza&#231;&#227;o como callback
+    });
   };
 
   const handleEdit = (id) => {
     console.log(`Editar post ${id}`);
-    // Implementar a l&oacute;gica de edi&ccedil;&atilde;o
+    // Implementar a l&#243;gica de edi&#231;&#227;o
   };
 
-  const handleDelete = (id) => {
-    console.log(`Excluir post ${id}`);
-    // Implementar a l&oacute;gica de exclus&atilde;o
-  };
+  const handleDelete = async (id) => {
+  try {
+    Alert.alert(
+      "Confirmar a exclusão do post",
+      "Tem certeza que deseja excluir este post?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel"
+        },
+        { 
+          text: "OK", 
+          onPress: async () => {
+            try {
+              await deletePost(id, token);
+              fetchPosts();
+              Alert.alert("Sucesso", "Post deletado com sucesso!");
+            } catch (error) {
+              console.error('Erro ao deletar post:', error);
+              Alert.alert("Erro", "Não foi possível deletar o post.");
+            }
+          }
+        }
+      ]
+    );
+  } catch (error) {
+    console.error('Erro ao mostrar alerta:', error);
+  }
+};
 
- return (
-    <ScrollView style={styles.container}>
+  return (
+    <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Bem-vindo ao Blog Escola!</Text>
         {userEmail && (
-          <Text style={styles.subHeaderText}>Você está logado como: {userEmail}</Text>
+          <Text style={styles.subHeaderText}>Voc&#234; est&#225; logado como: {userEmail}</Text>
         )}
       </View>
-      <TouchableOpacity 
-        style={styles.createButton} 
-        onPress={() => navigation.navigate('create', { token: token })}
-      >
-        <Text style={styles.createButtonText}>Criar Novo Post</Text>
-      </TouchableOpacity>
-      {posts.map((post) => (
-        <PostCard
-          key={post._id}
-          id={post._id}
-          title={post.titulo}
-          author={post.autor.nome}
-          subject={post.materia}
-          content={post.conteudo}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
-      ))}
-    </ScrollView>
+      <Button title="Criar Post" onPress={handleCreatePost} />
+      <FlatList
+        data={posts}
+        keyExtractor={(item) => item._id}
+        renderItem={({ item }) => (
+          <PostCard
+            key={item._id}
+            id={item._id}
+            title={item.titulo}
+            author={item.autor.nome}
+            subject={item.materia}
+            content={item.conteudo}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        )}
+      />
+    </View>
   );
 }
 
