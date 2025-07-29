@@ -18,7 +18,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#1F2937',
-    padding: 16,
+    padding:30,
+    paddingTop: 50, // Adjust for status bar height
+    
   },
   title: {
     fontSize: 24,
