@@ -1,7 +1,10 @@
+import { loginUser } from '@/api/login';
 import Header from '@/components/shared/Header';
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+
+
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -9,10 +12,19 @@ export default function Login() {
   const navigation = useNavigation();
 
 
-  const handleLogin = () => {
+
+  const handleLogin = async () => {
     // Aqui você implementaria a lógica de login
-    console.log('Login attempt with:', email, password);
-    navigation.navigate('home', { email:email });
+    try {
+      const result = await loginUser(email, password);
+      console.log('Login successful:', result);
+      Alert.alert('Sucesso', 'Login realizado com sucesso!');
+      navigation.navigate('home', { email: email });
+
+    } catch (error) {
+      console.log('Login attempt with:', email, password);
+      console.error('Login failed:', error);
+      Alert.alert('Erro', 'Falha no login. Por favor, verifique suas credenciais e tente novamente.');}
   };
   
   const handleRegister = () => {
