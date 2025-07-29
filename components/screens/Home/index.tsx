@@ -3,8 +3,8 @@ import PostCard from '@/components/PostCard';
 // import { IconSymbol } from '@/components/ui/IconSymbol';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { GetPosts } from '../../../api/login';
+import { Alert, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { GetPosts, deletePost } from '../../../api/login';
 
 export default function Home({ route }) {
   console.log("Route params:", route.params); // Adicione esta linha
@@ -67,6 +67,32 @@ export default function Home({ route }) {
     }
   };
 
+  const handleDeletePost = async (postId) => {
+    Alert.alert(
+      "Confirmar exclusao",
+      "Tem certeza que deseja excluir este post?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel"
+        },
+        {
+          text: "Excluir",
+          onPress: async () => {
+            try {
+              await deletePost(postId, token);
+              alert('Post exclusão do com realizado com sucesso!');
+              fetchPosts(); // Atualiza a lista de posts ap&#243;s a exclus&#227;o
+            } catch (error) {
+              console.error('Erro ao excluir post:', error);
+              alert('Erro ao excluir post. Por favor, tente novamente.');
+            }
+          }
+        }
+      ]
+    );
+  };
+
   const filteredPosts = posts.filter(post => 
     post.titulo.toLowerCase().includes(filterText.toLowerCase()) ||
     post.autor.nome.toLowerCase().includes(filterText.toLowerCase()) ||
@@ -108,6 +134,7 @@ export default function Home({ route }) {
               content={item.conteudo}
               canEdit={canEditPost}
               onEdit={handleEditPost}
+              onDelete={handleDeletePost}
             />
           </TouchableOpacity>
         )}
