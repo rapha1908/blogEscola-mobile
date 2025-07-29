@@ -111,3 +111,17 @@ export const deleteUser = async (userId: string, token: string) => {
     throw error;
   }
 };
+
+export const updateUser = async (id: string, userData: Partial<User>, token: string) => {
+  try {
+    const response = await api.put(`/users/${id}`, userData, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao atualizar usuário:', error.response?.data || error.message);
+    throw error;
+  }
+};

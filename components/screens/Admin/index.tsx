@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
-import { getUsers, deleteUser } from '../../../api/login'; // Você precisará criar essas funções
-import Home from '../Home'
+import React, { useEffect, useState } from 'react';
+import { Alert, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { deleteUser, getUsers, updateUser } from '../../../api/login'; // Adicione a fun��o updateUser
 
 interface User {
   _id: string;
@@ -11,9 +11,13 @@ interface User {
   tipo: string;
 }
 
+const userTypes = ["Aluno", "Professor", "Administrador"];
+
 export default function AdminScreen({ route }) {
   const [users, setUsers] = useState<User[]>([]);
   const [token, setToken] = useState(route.params?.token);
+  const [editingUser, setEditingUser] = useState<string | null>(null);
+  const [editedUser, setEditedUser] = useState<User | null>(null);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -33,8 +37,28 @@ export default function AdminScreen({ route }) {
   };
 
   const handleEditUser = (user: User) => {
-    // Navegue para a tela de edição de usuário
-    navigation.navigate('EditUser', { user, token, onUserUpdated: fetchUsers });
+    setEditingUser(user._id);
+    setEditedUser({ ...user });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingUser(null);
+    setEditedUser(null);
+  };
+
+  const handleSaveEdit = async () => {
+    if (editedUser) {
+      try {
+        await updateUser(editedUser._id, editedUser, token);
+        Alert.alert('Sucesso', 'Usuário atualizado com sucesso!');
+        setEditingUser(null);
+        setEditedUser(null);
+        fetchUsers(); // Atualiza a lista de usuários
+      } catch (error) {
+        console.error('Erro ao atualizar usuário:', error);
+        Alert.alert('Erro', 'Não foi possível atualizar o usuário.');
+      }
+    }
   };
 
   const handleDeleteUser = async (userId: string) => {
@@ -62,17 +86,55 @@ export default function AdminScreen({ route }) {
 
   const renderUserItem = ({ item }: { item: User }) => (
     <View style={styles.userItem}>
-      <Text style={styles.userName}>{item.nome}</Text>
-      <Text style={styles.userEmail}>{item.email}</Text>
-      <Text style={styles.userType}>{item.tipo}</Text>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.editButton} onPress={() => handleEditUser(item)}>
-          <Text style={styles.buttonText}>Editar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteUser(item._id)}>
-          <Text style={styles.buttonText}>Excluir</Text>
-        </TouchableOpacity>
-      </View>
+      {editingUser === item._id ? (
+        // Modo de edição
+        <View>
+          <TextInput
+            style={styles.input}
+            value={editedUser?.nome}
+            onChangeText={(text) => setEditedUser({ ...editedUser!, nome: text })}
+            placeholder="Nome"
+          />
+          <TextInput
+            style={styles.input}
+            value={editedUser?.email}
+            onChangeText={(text) => setEditedUser({ ...editedUser!, email: text })}
+            placeholder="Email"
+          />
+          <Picker
+            selectedValue={editedUser?.tipo}
+            style={styles.picker}
+            onValueChange={(itemValue) => setEditedUser({ ...editedUser!, tipo: itemValue })}
+          >
+            {userTypes.map((type) => (
+              <Picker.Item key={type} label={type} value={type} />
+            ))}
+          </Picker>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.saveButton} onPress={handleSaveEdit}>
+              <Text style={styles.buttonText}>Salvar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.cancelButton} onPress={handleCancelEdit}>
+              <Text style={styles.buttonText}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      ) : (
+        // Modo de visualização
+        <View>
+          <Text style={styles.userName}>{item.nome}</Text>
+          <Text style={styles.userEmail}>{item.email}</Text>
+          <Text style={styles.userType}>{item.tipo}</Text>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.editButton} onPress={() => handleEditUser(item)}>
+              <Text style={styles.buttonText}>Editar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteUser(item._id)}>
+              <Text style={styles.buttonText}>Excluir</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
     </View>
   );
 
@@ -141,5 +203,31 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  input: {
+    backgroundColor: '#4A5568',
+    color: 'white',
+    borderRadius: 4,
+    padding: 8,
+    marginBottom: 8,
+  },
+  saveButton: {
+    backgroundColor: '#48BB78',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 4,
+    marginRight: 8,
+  },
+  cancelButton: {
+    backgroundColor: '#718096',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 4,
+  },
+  picker: {
+    backgroundColor: '#4A5568',
+    color: 'white',
+    borderRadius: 4,
+    marginBottom: 8,
   },
 });
