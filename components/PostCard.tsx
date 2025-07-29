@@ -7,11 +7,12 @@ interface PostCardProps {
   author: string;
   subject: string;
   content: string;
+  canEdit: boolean; // Added canEdit prop
   onEdit: (id: string | number) => void; // Updated onEdit prop type
   onDelete: (id: string | number) => void; // Updated onDelete prop type
 }
 
-const PostCard: React.FC<PostCardProps> = ({ id, title, author, subject, content, onEdit, onDelete }) => {
+const PostCard: React.FC<PostCardProps> = ({ id, title, author, subject, content, canEdit, onEdit, onDelete }) => {
   const description = content.length > 100 ? content.substring(0, 97) + '...' : content;
 
   return (
@@ -21,9 +22,11 @@ const PostCard: React.FC<PostCardProps> = ({ id, title, author, subject, content
       <Text style={styles.subject}>Matéria: {subject}</Text>
       <Text style={styles.description}>{description}</Text>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => onEdit(id)}>
-          <Text style={styles.buttonText}>Editar</Text>
-        </TouchableOpacity>
+        {canEdit && (
+          <TouchableOpacity style={styles.button} onPress={() => onEdit(id)}>
+            <Text style={styles.buttonText}>Editar</Text>
+          </TouchableOpacity>
+        )}
         <TouchableOpacity style={styles.button} onPress={() => onDelete(id)}>
           <Text style={styles.buttonText}>Excluir</Text>
         </TouchableOpacity>
@@ -75,6 +78,17 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 12,
+  },
+  editButton: {
+    backgroundColor: '#4B5563',
+    padding: 5,
+    borderRadius: 5,
+    alignSelf: 'flex-end',
+    marginTop: 10,
+  },
+  editButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 

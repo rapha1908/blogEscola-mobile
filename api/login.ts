@@ -68,3 +68,18 @@ export const deletePost = async (id: string, token: string) => {
     throw error;
   }
 };
+
+export const UpdatePost = async (id: string, postData: { titulo: string, conteudo: string, materia: string }, token: string) => {
+  try {
+    const response = await api.put(`/Posts/${id}`, postData, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao atualizar post:', error.response?.data || error.message);
+    throw error;
+  }
+};

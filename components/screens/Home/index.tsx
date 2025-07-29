@@ -52,6 +52,21 @@ export default function Home({ route }) {
     navigation.navigate('login');
   };
 
+  const handleEditPost = (postId) => {
+    const postToEdit = posts.find(post => post._id === postId);
+    if (postToEdit) {
+      navigation.navigate('edit', {
+        postId: postId,
+        title: postToEdit.titulo,
+        author: postToEdit.autor.nome,
+        subject: postToEdit.materia,
+        content: postToEdit.conteudo,
+        token: token,
+        onPostUpdated: fetchPosts
+      });
+    }
+  };
+
   const filteredPosts = posts.filter(post => 
     post.titulo.toLowerCase().includes(filterText.toLowerCase()) ||
     post.autor.nome.toLowerCase().includes(filterText.toLowerCase()) ||
@@ -59,6 +74,7 @@ export default function Home({ route }) {
   );
 
   const canCreatePost = userType === 'Administrador' || userType === 'Professor';
+  const canEditPost = userType === 'Administrador' || userType === 'Professor';
   console.log("User type:", userType, "Can create post:", canCreatePost);
 
   return (
@@ -90,6 +106,8 @@ export default function Home({ route }) {
               author={item.autor.nome}
               subject={item.materia}
               content={item.conteudo}
+              canEdit={canEditPost}
+              onEdit={handleEditPost}
             />
           </TouchableOpacity>
         )}
