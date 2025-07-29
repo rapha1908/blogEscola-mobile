@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { Alert, Button, StyleSheet, TextInput, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import { createPost } from '../../../api/login';
 
 export default function CreatePost({ route }) {
@@ -27,29 +27,36 @@ export default function CreatePost({ route }) {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <TextInput
         style={styles.input}
         placeholder="Título"
         value={titulo}
         onChangeText={setTitulo}
+        placeholderTextColor="#999"
       />
       <TextInput
         style={styles.input}
         placeholder="Matéria"
         value={materia}
         onChangeText={setMateria}
+        placeholderTextColor="#999"
       />
       <TextInput
-        style={styles.input}
+        style={[styles.input, styles.textArea]}
         placeholder="Conteúdo"
         value={conteudo}
         onChangeText={setConteudo}
         multiline
+        numberOfLines={10}
+        textAlignVertical="top"
+        placeholderTextColor="#999"
       />
 
-      <Button title="Criar Post" onPress={handleSubmit} />
-    </View>
+      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+        <Text style={styles.buttonText}>Criar Post</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 }
 
@@ -65,5 +72,20 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 20,
     borderRadius: 5,
+    fontSize: 16,
+  },
+  textArea: {
+    height: 200,
+  },
+  button: {
+    backgroundColor: '#007AFF',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });

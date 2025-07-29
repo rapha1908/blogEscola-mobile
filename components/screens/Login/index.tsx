@@ -19,7 +19,7 @@ export default function Login() {
       const result = await loginUser(email, password);
       console.log('Login successful:', result);
       Alert.alert('Sucesso', 'Login realizado com sucesso!');
-      navigation.navigate('home', { email: email, token: result.token });
+      navigation.navigate('home', { email: email, token: result.token, userType: result.usuario.tipo });
 
     } catch (error) {
       console.log('Login attempt with:', email, password);

@@ -1,16 +1,18 @@
 import PostCard from '@/components/PostCard';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { Alert, Button, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { GetPosts, deletePost } from '../../../api/login';
+import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { GetPosts } from '../../../api/login';
 
 export default function Home({ route }) {
+  console.log("Route params:", route.params); // Adicione esta linha
+
   const [posts, setPosts] = useState([]);
   const [token, setToken] = useState(route.params?.token);
   const [userEmail, setUserEmail] = useState(route.params?.email);
+  const [userType, setUserType] = useState(route.params?.userType);
+  const [filterText, setFilterText] = useState("");
   const navigation = useNavigation();
-
-  const [filterText, setFilterText] = useState("")
 
   useEffect(() => {
     if (token) {
@@ -24,77 +26,47 @@ export default function Home({ route }) {
       setPosts(postsData);
     } catch (error) {
       console.error('Erro ao buscar posts:', error);
-      // Voc&#234; pode adicionar um alerta ou uma mensagem de erro aqui
+      alert('Erro ao buscar posts. Por favor, tente novamente.');
     }
   };
-  
+
   const handleCreatePost = () => {
-    navigation.navigate('create', { 
-      token: token,
-      onPostCreated: fetchPosts // Passa a fun&#231;&#227;o de atualiza&#231;&#227;o como callback
+    navigation.navigate('create', { token, onPostCreated: fetchPosts });
+  };
+
+  const handlePostPress = (post) => {
+    navigation.navigate('detail', {
+      title: post.titulo,
+      author: post.autor.nome,
+      subject: post.materia,
+      content: post.conteudo,
     });
   };
 
-  const handleEdit = (id) => {
-    console.log(`Editar post ${id}`);
-    // Implementar a l&#243;gica de edi&#231;&#227;o
-  };
+  const filteredPosts = posts.filter(post => 
+    post.titulo.toLowerCase().includes(filterText.toLowerCase()) ||
+    post.autor.nome.toLowerCase().includes(filterText.toLowerCase()) ||
+    post.conteudo.toLowerCase().includes(filterText.toLowerCase())
+  );
 
-  const handleDelete = async (id) => {
-  try {
-    Alert.alert(
-      "Confirmar a exclusão do post",
-      "Tem certeza que deseja excluir este post?",
-      [
-        {
-          text: "Cancelar",
-          style: "cancel"
-        },
-        { 
-          text: "OK", 
-          onPress: async () => {
-            try {
-              await deletePost(id, token);
-              fetchPosts();
-              Alert.alert("Sucesso", "Post deletado com sucesso!");
-            } catch (error) {
-              console.error('Erro ao deletar post:', error);
-              Alert.alert("Erro", "Não foi possível deletar o post.");
-            }
-          }
-        }
-      ]
-    );
-  } catch (error) {
-    console.error('Erro ao mostrar alerta:', error);
-  }
-};
-
-const filteredPosts = posts.filter(post => 
-  post.titulo.toLowerCase().includes(filterText.toLowerCase()) ||
-  post.autor.nome.toLowerCase().includes(filterText.toLowerCase()) ||
-  post.conteudo.toLowerCase().includes(filterText.toLowerCase())
-);
-
-const handlePostPress = (post) => {
-  navigation.navigate('detail', {
-    title: post.titulo,
-    author: post.autor.nome,
-    subject: post.materia,
-    content: post.conteudo,
-  });
-};
-
+  const canCreatePost = userType === 'Administrador' || userType === 'Professor';
+  console.log("User type:", userType, "Can create post:", canCreatePost);
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Bem-vindo ao Blog Escola!</Text>
         {userEmail && (
-          <Text style={styles.subHeaderText}>Voc&#234; est&#225; logado como: {userEmail}</Text>
+          <Text style={styles.subHeaderText}>Você está logado como: {userEmail}</Text>
         )}
       </View>
-      <Button title="Criar Post" onPress={handleCreatePost} />
+      
+      {canCreatePost && (
+        <TouchableOpacity style={styles.createButton} onPress={handleCreatePost}>
+          <Text style={styles.createButtonText}>Criar Post</Text>
+        </TouchableOpacity>
+      )}
+
       <TextInput
         style={styles.filterInput}
         placeholder="Buscar por título, autor ou conteúdo"
@@ -102,6 +74,7 @@ const handlePostPress = (post) => {
         onChangeText={setFilterText}
         placeholderTextColor="#9CA3AF"
       />
+
       <FlatList
         data={filteredPosts}
         keyExtractor={(item) => item._id}
@@ -114,8 +87,6 @@ const handlePostPress = (post) => {
               author={item.autor.nome}
               subject={item.materia}
               content={item.conteudo}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
             />
           </TouchableOpacity>
         )}
@@ -144,7 +115,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   createButton: {
-    backgroundColor: '#3498DB',
+    backgroundColor: '#007AFF',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
@@ -154,6 +125,7 @@ const styles = StyleSheet.create({
   createButtonText: {
     color: 'white',
     fontWeight: 'bold',
+    fontSize: 16,
   },
   filterInput: {
     height: 40,
