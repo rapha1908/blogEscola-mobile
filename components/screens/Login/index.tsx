@@ -14,21 +14,24 @@ export default function Login() {
 
 
   const handleLogin = async () => {
-    // Aqui você implementaria a lógica de login
     try {
       const result = await loginUser(email, password);
       console.log('Login successful:', result);
       Alert.alert('Sucesso', 'Login realizado com sucesso!');
-      navigation.navigate('home', { email: email, token: result.token, userType: result.usuario.tipo });
-
+      navigation.navigate('home', { 
+        email: email, 
+        token: result.token, 
+        userType: result.usuario.tipo 
+      });
     } catch (error) {
       console.log('Login attempt with:', email, password);
       console.error('Login failed:', error);
-      Alert.alert('Erro', 'Falha no login. Por favor, verifique suas credenciais e tente novamente.');}
+      Alert.alert('Erro', 'Falha no login. Por favor, verifique suas credenciais e tente novamente.');
+    }
   };
   
   const handleRegister = () => {
-    // Aqui você implementaria a lógica de login
+    // Aqui voc&#234; implementaria a l&#243;gica de login
     console.log('Login attempt with:', email, password);
     navigation.navigate('register');
   };

@@ -1,4 +1,6 @@
 import PostCard from '@/components/PostCard';
+// Remova ou comente a linha de importa&#231;&#227;o do IconSymbol
+// import { IconSymbol } from '@/components/ui/IconSymbol';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -43,6 +45,13 @@ export default function Home({ route }) {
     });
   };
 
+  const handleLogout = () => {
+    setToken(null);
+    setUserEmail(null);
+    setUserType(null);
+    navigation.navigate('login');
+  };
+
   const filteredPosts = posts.filter(post => 
     post.titulo.toLowerCase().includes(filterText.toLowerCase()) ||
     post.autor.nome.toLowerCase().includes(filterText.toLowerCase()) ||
@@ -57,19 +66,13 @@ export default function Home({ route }) {
       <View style={styles.header}>
         <Text style={styles.headerText}>Bem-vindo ao Blog Escola!</Text>
         {userEmail && (
-          <Text style={styles.subHeaderText}>Você está logado como: {userEmail}</Text>
+          <Text style={styles.subHeaderText}>Voc&#234; est&#225; logado como: {userEmail}</Text>
         )}
       </View>
       
-      {canCreatePost && (
-        <TouchableOpacity style={styles.createButton} onPress={handleCreatePost}>
-          <Text style={styles.createButtonText}>Criar Post</Text>
-        </TouchableOpacity>
-      )}
-
       <TextInput
         style={styles.filterInput}
-        placeholder="Buscar por título, autor ou conteúdo"
+        placeholder="Buscar por t&#237;tulo, autor ou conte&#250;do"
         value={filterText}
         onChangeText={setFilterText}
         placeholderTextColor="#9CA3AF"
@@ -91,6 +94,17 @@ export default function Home({ route }) {
           </TouchableOpacity>
         )}
       />
+
+      <View style={styles.footer}>
+        {canCreatePost && (
+          <TouchableOpacity style={styles.createButton} onPress={handleCreatePost}>
+            <Text style={styles.createButtonText}>+</Text>
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <Text style={styles.logoutButtonText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -114,19 +128,6 @@ const styles = StyleSheet.create({
     color: '#9CA3AF',
     fontSize: 16,
   },
-  createButton: {
-    backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginHorizontal: 20,
-    marginBottom: 20,
-  },
-  createButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
   filterInput: {
     height: 40,
     borderColor: '#9CA3AF',
@@ -136,5 +137,35 @@ const styles = StyleSheet.create({
     margin: 20,
     color: 'white',
     backgroundColor: '#374151',
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#374151',
+  },
+  createButton: {
+    backgroundColor: '#007AFF',
+    padding: 10,
+    borderRadius: 30,
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  createButtonText: {
+    color: '#FFFFFF',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  logoutButton: {
+    backgroundColor: '#DC2626',
+    padding: 10,
+    borderRadius: 5,
+  },
+  logoutButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
