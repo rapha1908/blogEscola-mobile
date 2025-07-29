@@ -1,6 +1,7 @@
 import CreatePost from "@/components/screens/CreatePost";
 import Home from "@/components/screens/Home";
 import Login from "@/components/screens/Login";
+import PostDetails from "@/components/screens/PostDetails";
 import Register from "@/components/screens/Register";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 const { Navigator, Screen } = createNativeStackNavigator();
@@ -11,6 +12,7 @@ export function AppRoutes() {
       <Screen name="home" component={Home} />
       <Screen name="register" component={Register} />
       <Screen name="create" component={CreatePost} />
+      <Screen name="detail" component={PostDetails} />
 
     </Navigator>
   );

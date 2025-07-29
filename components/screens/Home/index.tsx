@@ -1,7 +1,7 @@
 import PostCard from '@/components/PostCard';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { Alert, Button, FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, Button, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { GetPosts, deletePost } from '../../../api/login';
 
 export default function Home({ route }) {
@@ -76,6 +76,16 @@ const filteredPosts = posts.filter(post =>
   post.conteudo.toLowerCase().includes(filterText.toLowerCase())
 );
 
+const handlePostPress = (post) => {
+  navigation.navigate('detail', {
+    title: post.titulo,
+    author: post.autor.nome,
+    subject: post.materia,
+    content: post.conteudo,
+  });
+};
+
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -96,16 +106,18 @@ const filteredPosts = posts.filter(post =>
         data={filteredPosts}
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
-          <PostCard
-            key={item._id}
-            id={item._id}
-            title={item.titulo}
-            author={item.autor.nome}
-            subject={item.materia}
-            content={item.conteudo}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
+          <TouchableOpacity onPress={() => handlePostPress(item)}>
+            <PostCard
+              key={item._id}
+              id={item._id}
+              title={item.titulo}
+              author={item.autor.nome}
+              subject={item.materia}
+              content={item.conteudo}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          </TouchableOpacity>
         )}
       />
     </View>
