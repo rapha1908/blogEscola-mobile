@@ -18,8 +18,8 @@ export default function CreatePost({ route }) {
     try {
       await createPost({ titulo, conteudo, materia }, token);
       Alert.alert('Sucesso', 'Post criado com sucesso!');
-      onPostCreated(); // Chama a função de callback para atualizar a lista na Home
-      navigation.goBack(); // Volta para a tela Home
+      onPostCreated(); 
+      navigation.goBack(); 
     } catch (error) {
       console.error('Erro ao criar post:', error);
       Alert.alert('Erro', 'Não foi possível criar o post.');

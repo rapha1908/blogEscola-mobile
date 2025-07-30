@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   deleteButton: {
-    backgroundColor: '#E53E3E', // Cor vermelha para o botão de excluir
+    backgroundColor: '#E53E3E', 
   },
   buttonText: {
     color: 'white',

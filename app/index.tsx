@@ -7,7 +7,6 @@ export default function Index() {
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    // Aqui voc&#234; implementaria a l&#243;gica de login
     console.log('Login attempt with:', email, password);
   };
 

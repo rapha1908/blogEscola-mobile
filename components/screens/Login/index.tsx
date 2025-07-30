@@ -31,7 +31,6 @@ export default function Login() {
   };
   
   const handleRegister = () => {
-    // Aqui voc&#234; implementaria a l&#243;gica de login
     console.log('Login attempt with:', email, password);
     navigation.navigate('register');
   };

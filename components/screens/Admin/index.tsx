@@ -2,7 +2,7 @@ import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { Alert, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { deleteUser, getUsers, updateUser } from '../../../api/login'; // Adicione a fun��o updateUser
+import { deleteUser, getUsers, updateUser } from '../../../api/login';
 
 interface User {
   _id: string;
@@ -53,7 +53,7 @@ export default function AdminScreen({ route }) {
         Alert.alert('Sucesso', 'Usuário atualizado com sucesso!');
         setEditingUser(null);
         setEditedUser(null);
-        fetchUsers(); // Atualiza a lista de usuários
+        fetchUsers(); 
       } catch (error) {
         console.error('Erro ao atualizar usuário:', error);
         Alert.alert('Erro', 'Não foi possível atualizar o usuário.');
@@ -73,7 +73,7 @@ export default function AdminScreen({ route }) {
             try {
               await deleteUser(userId, token);
               Alert.alert('Sucesso', 'Usuário excluído com sucesso!');
-              fetchUsers(); // Atualiza a lista de usuários
+              fetchUsers(); 
             } catch (error) {
               console.error('Erro ao excluir usuário:', error);
               Alert.alert('Erro', 'Não foi possível excluir o usuário.');
@@ -87,7 +87,7 @@ export default function AdminScreen({ route }) {
   const renderUserItem = ({ item }: { item: User }) => (
     <View style={styles.userItem}>
       {editingUser === item._id ? (
-        // Modo de edição
+        
         <View>
           <TextInput
             style={styles.input}
@@ -120,7 +120,6 @@ export default function AdminScreen({ route }) {
           </View>
         </View>
       ) : (
-        // Modo de visualização
         <View>
           <Text style={styles.userName}>{item.nome}</Text>
           <Text style={styles.userEmail}>{item.email}</Text>

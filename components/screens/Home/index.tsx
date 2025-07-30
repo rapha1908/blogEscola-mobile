@@ -1,13 +1,11 @@
 import PostCard from '@/components/PostCard';
-// Remova ou comente a linha de importa&#231;&#227;o do IconSymbol
-// import { IconSymbol } from '@/components/ui/IconSymbol';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { Alert, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { GetPosts, deletePost } from '../../../api/login';
 
 export default function Home({ route }) {
-  console.log("Route params:", route.params); // Adicione esta linha
+  console.log("Route params:", route.params); 
 
   const [posts, setPosts] = useState([]);
   const [token, setToken] = useState(route.params?.token);
@@ -82,7 +80,7 @@ export default function Home({ route }) {
             try {
               await deletePost(postId, token);
               alert('Post exclusão do com realizado com sucesso!');
-              fetchPosts(); // Atualiza a lista de posts ap&#243;s a exclus&#227;o
+              fetchPosts(); 
             } catch (error) {
               console.error('Erro ao excluir post:', error);
               alert('Erro ao excluir post. Por favor, tente novamente.');
